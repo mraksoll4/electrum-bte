@@ -4,7 +4,7 @@ import QtQuick.Controls 2.14
 import QtQuick.Controls.Material 2.0
 import QtQml.Models 2.1
 
-import org.electrum 1.0
+import org.electrum_bte 1.0
 
 import "controls"
 

@@ -61,7 +61,7 @@ You probably need to clear the cache: `rm -rf .buildozer/android/platform/build-
 Assuming `adb` is installed:
 ```
 $ adb -d install -r dist/Electrum-*-arm64-v8a-debug.apk
-$ adb shell monkey -p org.electrum.electrum 1
+$ adb shell monkey -p org.electrum_bte.electrum_bte 1
 ```
 
 
@@ -86,7 +86,7 @@ adb logcat | grep python
 ```
 Better `grep` but fragile because of `cut`:
 ```
-adb logcat | grep -F "`adb shell ps | grep org.electrum.electrum | cut -c14-19`"
+adb logcat | grep -F "`adb shell ps | grep org.electrum_bte.electrum_bte | cut -c14-19`"
 ```
 
 
@@ -113,47 +113,111 @@ of Android does not let you access the internal storage of an app without root.
 (See [this](https://stackoverflow.com/q/9017073))
 ```
 $ adb shell
-$ run-as org.electrum.electrum ls /data/data/org.electrum.electrum/files/data
-$ run-as org.electrum.electrum cp /data/data/org.electrum.electrum/files/data/wallets/my_wallet /sdcard/some_path/my_wallet
+$ run-as org.electrum_bte.electrum_bte ls /data/data/org.electrum_bte.electrum_bte/files/data
+$ run-as org.electrum_bte.electrum_bte cp /data/data/org.electrum_bte.electrum_bte/files/data/wallets/my_wallet /sdcard/some_path/my_wallet
 ```
 
-Or use Android Studio: "Device File Explorer", which can download/upload data directly from device (via adb).
+### Update - How Fast build release
 
-### How to investigate diff between binaries if reproducibility fails?
+Host ubuntu 18.04-LTS
+
+Git clone https://github.com/bitweb-project/electrum-bte.git
+
+Generate your keystore files
+
+See e.g. [kivy wiki](https://github.com/kivy/kivy/wiki/Creating-a-Release-APK)
+
+as example rename it to android_release.keystore
+
+got to contrib\android\make_apk and edit it
+
+from 
+
+if [[ -n "$1"  && "$1" == "release" ]] ; then
+    echo -n Keystore Password:
+    read -s password
+    export P4A_RELEASE_KEYSTORE=~/.keystore
+    export P4A_RELEASE_KEYSTORE_PASSWD=$password
+    export P4A_RELEASE_KEYALIAS_PASSWD=$password
+    export P4A_RELEASE_KEYALIAS=electrum
+    # build two apks
+    export APP_ANDROID_ARCH=armeabi-v7a
+    make release
+    export APP_ANDROID_ARCH=arm64-v8a
+    make release
+    
+to
+
+if [[ -n "$1"  && "$1" == "release" ]] ; then
+    echo -n Keystore Password:
+    read -s password
+    export P4A_RELEASE_KEYSTORE="$CONTRIB_ANDROID"/android_release.keystore
+    export P4A_RELEASE_KEYSTORE_PASSWD=Your_Pass-for-key-store-file
+    export P4A_RELEASE_KEYALIAS_PASSWD=Your_Pass-for-key-store-file
+    export P4A_RELEASE_KEYALIAS=Your alis for key store file.
+    # build two apks
+    export APP_ANDROID_ARCH=armeabi-v7a
+    make release
+    export APP_ANDROID_ARCH=arm64-v8a
+    make release
+    
+Now copy keystore files and put it to contrib/android
+
+and run at android folder
+
 ```
-cd dist/
-unzip Electrum-*.apk1 -d apk1
-mkdir apk1/assets/private_mp3/
-tar -xzvf apk1/assets/private.mp3 --directory apk1/assets/private_mp3/
-
-unzip Electrum-*.apk2 -d apk2
-mkdir apk2/assets/private_mp3/
-tar -xzvf apk2/assets/private.mp3 --directory apk2/assets/private_mp3/
-
-sudo chown --recursive "$(id -u -n)" apk1/ apk2/
-chmod -R +Xr  apk1/ apk2/
-$(cd apk1; find -type f -exec sha256sum '{}' \; > ./../sha256sum1)
-$(cd apk2; find -type f -exec sha256sum '{}' \; > ./../sha256sum2)
-diff sha256sum1 sha256sum2 > d
-cat d
+    ./build.sh kivy all release
 ```
 
-### How to install apks built by the CI on my phone?
 
-The CI (Cirrus) builds apks on most git commits.
-See e.g. [here](https://github.com/spesmilo/electrum/runs/9272252577).
-The task name should start with "Android build".
-Click "View more details on Cirrus CI" to get to cirrus' website, and search for "Artifacts".
-The apk is built in `debug` mode, and is signed using an ephemeral RSA key.
+Then
 
-For tech demo purposes, you can directly install this apk on your phone.
-However, if you already have electrum installed on your phone, Android's TOFU signing model
-will not let you upgrade that to the CI apk due to mismatching signing keys. As the CI key
-is ephemeral, it is not even possible to upgrade from an older CI apk to a newer CI apk.
+This assumes an Ubuntu (x86_64) host, but it should not be too hard to adapt to another
+similar system. The docker commands should be executed in the project's root
+folder.
 
-However, it is possible to resign the apk manually with one's own key, using
-e.g. [`apksigner`](https://developer.android.com/studio/command-line/apksigner),
-mutating the apk in place, after which it should be possible to upgrade:
-```
-apksigner sign --ks ~/wspace/electrum/contrib/android/android_debug.keystore Electrum-*-arm64-v8a-debug.apk
-```
+1. Install Docker
+
+    ```
+    $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    $ sudo apt-get update
+    $ sudo apt-get install -y docker-ce
+    ```
+
+2. Build image
+
+    ```
+    $ sudo docker build -t electrum-android-builder-img contrib/android
+    ```
+
+3. Build locale files
+
+    ```
+    $ ./contrib/pull_locale
+    ```
+
+4. Prepare pure python dependencies
+
+    ```
+    $ ./contrib/make_packages
+    ```
+
+5. Build binaries
+
+    ```
+    $ mkdir --parents $PWD/.buildozer/.gradle
+    $ sudo docker run -it --rm \
+        --name electrum-android-builder-cont \
+        -v $PWD:/home/user/wspace/electrum \
+        -v $PWD/.buildozer/.gradle:/home/user/.gradle \
+        -v ~/.keystore:/home/user/.keystore \
+        --workdir /home/user/wspace/electrum \
+        electrum-android-builder-img \
+        ./contrib/android/make_apk release
+    ```
+    This mounts the project dir inside the container,
+    and so the modifications will affect it, e.g. `.buildozer` folder
+    will be created.
+
+5. The generated binary is in `./bin`.

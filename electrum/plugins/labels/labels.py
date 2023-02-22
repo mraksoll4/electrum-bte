@@ -33,7 +33,7 @@ class LabelsPlugin(BasePlugin):
 
     def __init__(self, parent, config, name):
         BasePlugin.__init__(self, parent, config, name)
-        self.target_host = 'labels.electrum.org'
+        self.target_host = 'labels.bitwebcore.net'
         self.wallets = {}
 
     def encode(self, wallet: 'Abstract_Wallet', msg: str) -> str:

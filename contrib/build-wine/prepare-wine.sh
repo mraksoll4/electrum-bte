@@ -4,6 +4,12 @@ PYINSTALLER_REPO="https://github.com/pyinstaller/pyinstaller.git"
 PYINSTALLER_COMMIT="0fe956a2c6157e1b276819de1a050c242de70a29"
 # ^ latest commit from "v4" branch, somewhat after "4.10" tag
 
+
+LIB_GCC_FILENAME=libgcc-6.3.0-1-mingw32-dll-1.tar.xz
+LIB_GCC_URL=https://netix.dl.sourceforge.net/project/mingw/MinGW/Base/gcc/Version6/gcc-6.3.0/$LIB_GCC_FILENAME
+LIB_GCC_SHA256=8cbfa963f645cc0f81c08df2a3ecbcefc776606f0fb9db7a280d79f05209a1c3
+
+
 PYTHON_VERSION=3.9.13
 
 
@@ -50,13 +56,19 @@ $WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-warn-scr
     --cache-dir "$WINE_PIP_CACHE_DIR" -r "$CONTRIB"/deterministic-build/requirements-build-base.txt
 $WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-binary :all: --no-warn-script-location \
     --cache-dir "$WINE_PIP_CACHE_DIR" -r "$CONTRIB"/deterministic-build/requirements-build-wine.txt
-
+$WINE_PYTHON -m pip install --no-build-isolation --no-dependencies --no-warn-script-location \
+    --cache-dir "$WINE_PIP_CACHE_DIR" -r "$CONTRIB"/deterministic-build/requirements-build-wine-algo.txt
 
 # copy already built DLLs
 cp "$DLL_TARGET_DIR"/libsecp256k1-*.dll $WINEPREFIX/drive_c/tmp/ || fail "Could not copy libsecp to its destination"
 cp "$DLL_TARGET_DIR/libzbar-0.dll" $WINEPREFIX/drive_c/tmp/ || fail "Could not copy libzbar to its destination"
 cp "$DLL_TARGET_DIR/libusb-1.0.dll" $WINEPREFIX/drive_c/tmp/ || fail "Could not copy libusb to its destination"
 
+download_if_not_exist $LIB_GCC_FILENAME "$LIB_GCC_URL"
+verify_hash $LIB_GCC_FILENAME $LIB_GCC_SHA256
+tar Jxfv $LIB_GCC_FILENAME
+
+cp bin/libgcc_s_dw2-1.dll $WINEPREFIX/drive_c/python3/Lib/site-packages/
 
 info "Building PyInstaller."
 # we build our own PyInstaller boot loader as the default one has high
@@ -73,7 +85,7 @@ info "Building PyInstaller."
         info "pyinstaller already built, skipping"
         exit 0
     fi
-    cd "$WINEPREFIX/drive_c/electrum"
+    cd "$WINEPREFIX/drive_c/electrum-bte"
     ELECTRUM_COMMIT_HASH=$(git rev-parse HEAD)
     cd "$CACHEDIR"
     rm -rf pyinstaller

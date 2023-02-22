@@ -295,7 +295,6 @@ class Abstract_Wallet(ABC, Logger, EventListener):
     txin_type: str
     wallet_type: str
     lnworker: Optional['LNWallet']
-    network: Optional['Network']
 
     def __init__(self, db: WalletDB, storage: Optional[WalletStorage], *, config: SimpleConfig):
 
@@ -542,7 +541,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
             addr = str(addrs[0])
             if not bitcoin.is_address(addr):
                 neutered_addr = addr[:5] + '..' + addr[-2:]
-                raise WalletFileException(f'The addresses in this wallet are not bitcoin addresses.\n'
+                raise WalletFileException(f'The addresses in this wallet are not bitweb addresses.\n'
                                           f'e.g. {neutered_addr} (length: {len(addr)})')
 
     def check_returned_address_for_corruption(func):
@@ -685,7 +684,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
         if self.is_watching_only():
             raise Exception(_("This is a watching-only wallet"))
         if not is_address(address):
-            raise Exception(f"Invalid bitcoin address: {address}")
+            raise Exception(f"Invalid bitweb address: {address}")
         if not self.is_mine(address):
             raise Exception(_('Address not in wallet.') + f' {address}')
         index = self.get_address_index(address)
@@ -1515,7 +1514,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
                 addrs = self.get_change_addresses(slice_start=-self.gap_limit_for_change)
                 change_addrs = [random.choice(addrs)] if addrs else []
         for addr in change_addrs:
-            assert is_address(addr), f"not valid bitcoin address: {addr}"
+            assert is_address(addr), f"not valid bitweb address: {addr}"
             # note that change addresses are not necessarily ismine
             # in which case this is a no-op
             self.check_address_for_corruption(addr)
@@ -1546,7 +1545,7 @@ class Abstract_Wallet(ABC, Logger, EventListener):
                 selected_addr = random.choice(addrs)
             else:  # fallback for e.g. imported wallets
                 selected_addr = self.get_receiving_address()
-        assert is_address(selected_addr), f"not valid bitcoin address: {selected_addr}"
+        assert is_address(selected_addr), f"not valid bitweb address: {selected_addr}"
         return selected_addr
 
     def can_pay_onchain(self, outputs, coins=None):
@@ -2188,12 +2187,6 @@ class Abstract_Wallet(ABC, Logger, EventListener):
             return True
         return False
 
-    def _get_rawtx_from_network(self, txid: str) -> str:
-        """legacy hack. do not use in new code."""
-        assert self.network
-        return self.network.run_from_another_thread(
-            self.network.get_transaction(txid, timeout=10))
-
     def get_input_tx(self, tx_hash: str, *, ignore_network_issues=False) -> Optional[Transaction]:
         # First look up an input transaction in the wallet where it
         # will likely be.  If co-signing a transaction it may not have
@@ -2201,7 +2194,8 @@ class Abstract_Wallet(ABC, Logger, EventListener):
         tx = self.db.get_transaction(tx_hash)
         if not tx and self.network and self.network.has_internet_connection():
             try:
-                raw_tx = self._get_rawtx_from_network(tx_hash)
+                raw_tx = self.network.run_from_another_thread(
+                    self.network.get_transaction(tx_hash, timeout=10))
             except NetworkException as e:
                 _logger.info(f'got network error getting input txn. err: {repr(e)}. txid: {tx_hash}. '
                              f'if you are intentionally offline, consider using the --offline flag')

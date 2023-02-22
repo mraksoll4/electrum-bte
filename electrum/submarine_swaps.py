@@ -32,8 +32,8 @@ if TYPE_CHECKING:
     from .simple_config import SimpleConfig
 
 
-API_URL_MAINNET = 'https://swaps.electrum.org/api'
-API_URL_TESTNET = 'https://swaps.electrum.org/testnet'
+API_URL_MAINNET = 'https://swaps.bitwebcore.net/api'
+API_URL_TESTNET = 'https://swaps.bitwebcore.net/testnet'
 API_URL_REGTEST = 'https://localhost/api'
 
 

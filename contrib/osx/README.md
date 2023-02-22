@@ -100,6 +100,13 @@ $ sudo installer -package "/Volumes/Command Line Developer Tools/Command Line To
 $ hdiutil detach "/Volumes/Command Line Developer Tools"
 ```
 
+Important for pass error
+```
+ error: implicit declaration of function
+ use
+ export CFLAGS='-Wno-implicit-function-declaration'
+```
+
 #### 2. Build Electrum
 
     cd electrum

@@ -5,8 +5,8 @@ set -e
 # Parameterize
 PYTHON_VERSION=3.9.13
 PY_VER_MAJOR="3.9"  # as it appears in fs paths
-PACKAGE=Electrum
-GIT_REPO=https://github.com/spesmilo/electrum
+PACKAGE=Electrum-BTE
+GIT_REPO=https://github.com/bitweb-project/electrum-bte
 
 export GCC_STRIP_BINARIES="1"
 export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ folders with .pyc files
@@ -250,9 +250,9 @@ if [ ! -z "$CODESIGN_CERT" ]; then
 fi
 
 info "Creating .DMG"
-hdiutil create -fs HFS+ -volname $PACKAGE -srcfolder dist/$PACKAGE.app dist/electrum-$VERSION.dmg || fail "Could not create .DMG"
+hdiutil create -fs HFS+ -volname $PACKAGE -srcfolder dist/$PACKAGE.app dist/electrum-bte-$VERSION.dmg || fail "Could not create .DMG"
 
-DoCodeSignMaybe ".DMG" "dist/electrum-${VERSION}.dmg"
+DoCodeSignMaybe ".DMG" "dist/electrum-bte-${VERSION}.dmg"
 
 if [ -z "$CODESIGN_CERT" ]; then
     warn "App was built successfully but was not code signed. Users may get security warnings from macOS."

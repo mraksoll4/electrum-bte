@@ -83,18 +83,18 @@ def all_subclasses(cls) -> Set:
 ca_path = certifi.where()
 
 
-base_units = {'BTC':8, 'mBTC':5, 'bits':2, 'sat':0}
+base_units = {'BTE':8, 'mBTE':5, 'bits':2, 'sat':0}
 base_units_inverse = inv_dict(base_units)
-base_units_list = ['BTC', 'mBTC', 'bits', 'sat']  # list(dict) does not guarantee order
+base_units_list = ['BTE', 'mBTE', 'bits', 'sat']  # list(dict) does not guarantee order
 
-DECIMAL_POINT_DEFAULT = 5  # mBTC
+DECIMAL_POINT_DEFAULT = 8  # mBTE
 
 
 class UnknownBaseUnit(Exception): pass
 
 
 def decimal_point_to_base_unit_name(dp: int) -> str:
-    # e.g. 8 -> "BTC"
+    # e.g. 8 -> "BTE"
     try:
         return base_units_inverse[dp]
     except KeyError:
@@ -601,11 +601,11 @@ def user_dir():
     elif 'ANDROID_DATA' in os.environ:
         return android_data_dir()
     elif os.name == 'posix':
-        return os.path.join(os.environ["HOME"], ".electrum")
+        return os.path.join(os.environ["HOME"], ".electrum_bte")
     elif "APPDATA" in os.environ:
-        return os.path.join(os.environ["APPDATA"], "Electrum")
+        return os.path.join(os.environ["APPDATA"], "Electrum_BTE")
     elif "LOCALAPPDATA" in os.environ:
-        return os.path.join(os.environ["LOCALAPPDATA"], "Electrum")
+        return os.path.join(os.environ["LOCALAPPDATA"], "Electrum_BTE")
     else:
         #raise Exception("No home directory found in environment variables.")
         return
@@ -824,76 +824,18 @@ def time_difference(distance_in_time, include_seconds):
         return _("over {} years").format(round(distance_in_minutes / 525600))
 
 mainnet_block_explorers = {
-    'Bitupper Explorer': ('https://bitupper.com/en/explorer/bitcoin/',
-                        {'tx': 'transactions/', 'addr': 'addresses/'}),
-    'Bitflyer.jp': ('https://chainflyer.bitflyer.jp/',
-                        {'tx': 'Transaction/', 'addr': 'Address/'}),
-    'Blockchain.info': ('https://blockchain.com/btc/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'blockchainbdgpzk.onion': ('https://blockchainbdgpzk.onion/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'Blockstream.info': ('https://blockstream.info/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'Bitaps.com': ('https://btc.bitaps.com/',
-                        {'tx': '', 'addr': ''}),
-    'BTC.com': ('https://btc.com/',
-                        {'tx': '', 'addr': ''}),
-    'Chain.so': ('https://www.chain.so/',
-                        {'tx': 'tx/BTC/', 'addr': 'address/BTC/'}),
-    'Insight.is': ('https://insight.bitpay.com/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'TradeBlock.com': ('https://tradeblock.com/blockchain/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'BlockCypher.com': ('https://live.blockcypher.com/btc/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'Blockchair.com': ('https://blockchair.com/bitcoin/',
-                        {'tx': 'transaction/', 'addr': 'address/'}),
-    'blockonomics.co': ('https://www.blockonomics.co/',
-                        {'tx': 'api/tx?txid=', 'addr': '#/search?q='}),
-    'mempool.space': ('https://mempool.space/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'mempool.emzy.de': ('https://mempool.emzy.de/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'OXT.me': ('https://oxt.me/',
-                        {'tx': 'transaction/', 'addr': 'address/'}),
-    'smartbit.com.au': ('https://www.smartbit.com.au/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'mynode.local': ('http://mynode.local:3002/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'system default': ('blockchain:/',
+    'Bitweb Explorer': ('https://explorer.bitwebcore.org/',
                         {'tx': 'tx/', 'addr': 'address/'}),
 }
 
 testnet_block_explorers = {
-    'Bitaps.com': ('https://tbtc.bitaps.com/',
-                       {'tx': '', 'addr': ''}),
-    'BlockCypher.com': ('https://live.blockcypher.com/btc-testnet/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'Blockchain.info': ('https://www.blockchain.com/btc-testnet/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'Blockstream.info': ('https://blockstream.info/testnet/',
+    'Bitweb Explorer': ('https://explorer.bitwebcore.org/',
                         {'tx': 'tx/', 'addr': 'address/'}),
-    'mempool.space': ('https://mempool.space/testnet/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'smartbit.com.au': ('https://testnet.smartbit.com.au/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'system default': ('blockchain://000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
 }
 
 signet_block_explorers = {
-    'bc-2.jp': ('https://explorer.bc-2.jp/',
+    'Bitweb Explorer': ('https://explorer.bitwebcore.org/',
                         {'tx': 'tx/', 'addr': 'address/'}),
-    'mempool.space': ('https://mempool.space/signet/',
-                        {'tx': 'tx/', 'addr': 'address/'}),
-    'bitcoinexplorer.org': ('https://signet.bitcoinexplorer.org/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'wakiyamap.dev': ('https://signet-explorer.wakiyamap.dev/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'ex.signet.bublina.eu.org': ('https://ex.signet.bublina.eu.org/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
-    'system default': ('blockchain:/',
-                       {'tx': 'tx/', 'addr': 'address/'}),
 }
 
 _block_explorer_default_api_loc = {'tx': 'tx/', 'addr': 'address/'}
@@ -957,7 +899,7 @@ def block_explorer_URL(config: 'SimpleConfig', kind: str, item: str) -> Optional
 
 
 # note: when checking against these, use .lower() to support case-insensitivity
-BITCOIN_BIP21_URI_SCHEME = 'bitcoin'
+BITCOIN_BIP21_URI_SCHEME = 'bitweb'
 LIGHTNING_URI_SCHEME = 'lightning'
 
 
@@ -976,12 +918,12 @@ def parse_URI(uri: str, on_pr: Callable = None, *, loop=None) -> dict:
 
     if ':' not in uri:
         if not bitcoin.is_address(uri):
-            raise InvalidBitcoinURI("Not a bitcoin address")
+            raise InvalidBitcoinURI("Not a bitweb address")
         return {'address': uri}
 
     u = urllib.parse.urlparse(uri)
     if u.scheme.lower() != BITCOIN_BIP21_URI_SCHEME:
-        raise InvalidBitcoinURI("Not a bitcoin URI")
+        raise InvalidBitcoinURI("Not a bitweb URI")
     address = u.path
 
     # python for android fails to parse query
@@ -998,7 +940,7 @@ def parse_URI(uri: str, on_pr: Callable = None, *, loop=None) -> dict:
     out = {k: v[0] for k, v in pq.items()}
     if address:
         if not bitcoin.is_address(address):
-            raise InvalidBitcoinURI(f"Invalid bitcoin address: {address}")
+            raise InvalidBitcoinURI(f"Invalid bitweb address: {address}")
         out['address'] = address
     if 'amount' in out:
         am = out['amount']
@@ -1561,17 +1503,12 @@ def is_tor_socks_port(host: str, port: int) -> bool:
     return False
 
 
-AS_LIB_USER_I_WANT_TO_MANAGE_MY_OWN_ASYNCIO_LOOP = False  # used by unit tests
-
 _asyncio_event_loop = None  # type: Optional[asyncio.AbstractEventLoop]
 def get_asyncio_loop() -> asyncio.AbstractEventLoop:
     """Returns the global asyncio event loop we use."""
-    if loop := _asyncio_event_loop:
-        return loop
-    if AS_LIB_USER_I_WANT_TO_MANAGE_MY_OWN_ASYNCIO_LOOP:
-        if loop := get_running_loop():
-            return loop
-    raise Exception("event loop not created yet")
+    if _asyncio_event_loop is None:
+        raise Exception("event loop not created yet")
+    return _asyncio_event_loop
 
 
 def create_and_start_event_loop() -> Tuple[asyncio.AbstractEventLoop,
@@ -1782,6 +1719,7 @@ class CallbackManager:
     def __init__(self):
         self.callback_lock = threading.Lock()
         self.callbacks = defaultdict(list)      # note: needs self.callback_lock
+        self.asyncio_loop = None
 
     def register_callback(self, func, events):
         with self.callback_lock:
@@ -1799,20 +1737,21 @@ class CallbackManager:
         Can be called from any thread. The callback itself will get scheduled
         on the event loop.
         """
-        loop = get_asyncio_loop()
-        assert loop.is_running(), "event loop not running"
+        if self.asyncio_loop is None:
+            self.asyncio_loop = get_asyncio_loop()
+            assert self.asyncio_loop.is_running(), "event loop not running"
         with self.callback_lock:
             callbacks = self.callbacks[event][:]
         for callback in callbacks:
             # FIXME: if callback throws, we will lose the traceback
             if asyncio.iscoroutinefunction(callback):
-                asyncio.run_coroutine_threadsafe(callback(*args), loop)
-            elif get_running_loop() == loop:
+                asyncio.run_coroutine_threadsafe(callback(*args), self.asyncio_loop)
+            elif get_running_loop() == self.asyncio_loop:
                 # run callback immediately, so that it is guaranteed
                 # to have been executed when this method returns
                 callback(*args)
             else:
-                loop.call_soon_threadsafe(callback, *args)
+                self.asyncio_loop.call_soon_threadsafe(callback, *args)
 
 
 callback_mgr = CallbackManager()

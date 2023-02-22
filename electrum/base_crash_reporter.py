@@ -34,7 +34,7 @@ from .logging import describe_os_version, Logger, get_git_version
 
 
 class BaseCrashReporter(Logger):
-    report_server = "https://crashhub.electrum.org"
+    report_server = "https://crashhub.bitwebcore.net"
     config_key = "show_crash_reporter"
     issue_template = """<h2>Traceback</h2>
 <pre>
@@ -50,7 +50,7 @@ class BaseCrashReporter(Logger):
   <li>Locale: {locale}</li>
 </ul>
     """
-    CRASH_MESSAGE = _('Something went wrong while executing Electrum.')
+    CRASH_MESSAGE = _('Something went wrong while executing Electrum BTE.')
     CRASH_TITLE = _('Sorry!')
     REQUEST_HELP_MESSAGE = _('To help us diagnose and fix the problem, you can send us a bug report that contains '
                              'useful debug information:')
@@ -64,7 +64,7 @@ class BaseCrashReporter(Logger):
         self.exc_args = (exctype, value, tb)
 
     def send_report(self, asyncio_loop, proxy, endpoint="/crash", *, timeout=None):
-        if constants.net.GENESIS[-4:] not in ["4943", "e26f"] and ".electrum.org" in BaseCrashReporter.report_server:
+        if constants.net.GENESIS[-4:] not in ["4943", "e26f"] and ".btwebcore.net" in BaseCrashReporter.report_server:
             # Gah! Some kind of altcoin wants to send us crash reports.
             raise Exception(_("Missing report URL."))
         report = self.get_traceback_info()

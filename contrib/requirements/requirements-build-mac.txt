@@ -13,3 +13,6 @@ pyinstaller-hooks-contrib>=2020.6
 # otherwise when installing hidapi, pip just downloads the latest Cython.
 # see https://github.com/spesmilo/electrum/issues/5859
 Cython>=0.27
+
+# Algo YescryptR16 support.
+bitweb_yespower

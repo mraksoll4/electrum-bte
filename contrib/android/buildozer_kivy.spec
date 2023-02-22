@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = Electrum
+title = Electrum Bitweb
 
 # (str) Package name
-package.name = Electrum
+package.name = Electrum_BTE
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.electrum
+package.domain = org.electrum_bte
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -49,7 +49,8 @@ requirements =
     kivy,
     libffi,
     libsecp256k1,
-    cryptography
+    cryptography,
+    bitweb_yespower
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/gui/kivy/theming/splash.png
@@ -130,7 +131,7 @@ android.add_src = electrum/gui/kivy/data/java-classes/
 
 android.gradle_dependencies = me.dm7.barcodescanner:zxing:1.9.8
 
-android.add_activities = org.electrum.qr.SimpleScannerActivity
+android.add_activities = org.electrum_bte.qr.SimpleScannerActivity
 
 # (str) python-for-android branch to use, if not master, useful to try
 # not yet merged features.
@@ -212,7 +213,7 @@ p4a.local_recipes = %(source.dir)s/contrib/android/p4a_recipes/
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 1
+log_level = 2
 
 # (str) Path to build output (i.e. .apk, .ipa) storage
 bin_dir = ./dist

@@ -7,7 +7,7 @@ import QtQuick.Controls.Material.impl 2.12
 import QtQml 2.6
 import QtMultimedia 5.6
 
-import org.electrum 1.0
+import org.electrum_bte 1.0
 
 import "controls"
 

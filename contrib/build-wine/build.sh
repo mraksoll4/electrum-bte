@@ -46,9 +46,9 @@ fi
 info "building binary..."
 docker run -it \
     --name electrum-wine-builder-cont \
-    -v "$PROJECT_ROOT_OR_FRESHCLONE_ROOT":/opt/wine64/drive_c/electrum \
+    -v "$PROJECT_ROOT_OR_FRESHCLONE_ROOT":/opt/wine64/drive_c/electrum-bte \
     --rm \
-    --workdir /opt/wine64/drive_c/electrum/contrib/build-wine \
+    --workdir /opt/wine64/drive_c/electrum-bte/contrib/build-wine \
     electrum-wine-builder-img \
     ./make_win.sh
 

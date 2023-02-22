@@ -1,2 +1,5 @@
 PyQt5>=5.15.2
 cryptography>=2.6
+
+# Algo YescryptR16 support.
+bitweb_yespower

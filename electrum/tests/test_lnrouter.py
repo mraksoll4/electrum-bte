@@ -3,7 +3,6 @@ import unittest
 import tempfile
 import shutil
 import asyncio
-from typing import Optional
 
 from electrum import util
 from electrum.util import bfh
@@ -31,19 +30,18 @@ def node(character: str) -> bytes:
 class Test_LNRouter(ElectrumTestCase):
     TESTNET = True
 
-    cdb = None  # type: Optional[lnrouter.ChannelDB]
+    cdb = None
 
     def setUp(self):
         super().setUp()
         self.config = SimpleConfig({'electrum_path': self.electrum_path})
-        self.assertIsNone(self.cdb)  # sanity-check side effects from previous tests
 
-    async def asyncTearDown(self):
+    def tearDown(self):
         # if the test called prepare_graph(), channeldb needs to be cleaned up
         if self.cdb:
             self.cdb.stop()
-            await self.cdb.stopped_event.wait()
-        await super().asyncTearDown()
+            asyncio.run_coroutine_threadsafe(self.cdb.stopped_event.wait(), self.asyncio_loop).result()
+        super().tearDown()
 
     def prepare_graph(self):
         """
@@ -141,7 +139,7 @@ class Test_LNRouter(ElectrumTestCase):
         add_chan_upd({'short_channel_id': channel(7), 'message_flags': b'\x00', 'channel_flags': b'\x00', 'cltv_expiry_delta': 10, 'htlc_minimum_msat': 250, 'fee_base_msat': 100, 'fee_proportional_millionths': 150, 'chain_hash': BitcoinTestnet.rev_genesis_bytes(), 'timestamp': 0})
         add_chan_upd({'short_channel_id': channel(7), 'message_flags': b'\x00', 'channel_flags': b'\x01', 'cltv_expiry_delta': 10, 'htlc_minimum_msat': 250, 'fee_base_msat': 100, 'fee_proportional_millionths': 150, 'chain_hash': BitcoinTestnet.rev_genesis_bytes(), 'timestamp': 0})
 
-    async def test_find_path_for_payment(self):
+    def test_find_path_for_payment(self):
         self.prepare_graph()
         amount_to_send = 100000
 
@@ -158,7 +156,7 @@ class Test_LNRouter(ElectrumTestCase):
         self.assertEqual(node('b'), route[0].node_id)
         self.assertEqual(channel(3), route[0].short_channel_id)
 
-    async def test_find_path_liquidity_hints(self):
+    def test_find_path_liquidity_hints(self):
         self.prepare_graph()
         amount_to_send = 100000
 
@@ -215,7 +213,7 @@ class Test_LNRouter(ElectrumTestCase):
         self.assertEqual(channel(4), path[1].short_channel_id)
         self.assertEqual(channel(7), path[2].short_channel_id)
 
-    async def test_find_path_liquidity_hints_inflight_htlcs(self):
+    def test_find_path_liquidity_hints_inflight_htlcs(self):
         self.prepare_graph()
         amount_to_send = 100000
 

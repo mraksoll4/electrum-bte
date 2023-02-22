@@ -1,21 +1,16 @@
-# Electrum - Lightweight Bitcoin client
+# Electrum Bitweb - Lightweight Bitweb client
 
 ```
 Licence: MIT Licence
 Author: Thomas Voegtlin
 Language: Python (>= 3.8)
-Homepage: https://electrum.org/
+Homepage: https://bitwebcore.net/
 ```
-
-[![Build Status](https://api.cirrus-ci.com/github/spesmilo/electrum.svg?branch=master)](https://cirrus-ci.com/github/spesmilo/electrum)
-[![Test coverage statistics](https://coveralls.io/repos/github/spesmilo/electrum/badge.svg?branch=master)](https://coveralls.io/github/spesmilo/electrum?branch=master)
-[![Help translate Electrum online](https://d322cqt584bo4o.cloudfront.net/electrum/localized.svg)](https://crowdin.com/project/electrum)
-
 
 ## Getting started
 
 _(If you've come here looking to simply run Electrum,
-[you may download it here](https://electrum.org/#download).)_
+[you may download it here](https://bitwebcore.net/#download).)_
 
 Electrum itself is pure Python, and so are most of the required dependencies,
 but not everything. The following sections describe how to run from source, but here
@@ -87,8 +82,8 @@ and [for macOS](contrib/osx/README_macos.md))_
 
 Check out the code from GitHub:
 ```
-$ git clone https://github.com/spesmilo/electrum.git
-$ cd electrum
+$ git clone https://github.com/bitweb-project/electrum-bte.git
+$ cd electrum-bte
 $ git submodule update --init
 ```
 

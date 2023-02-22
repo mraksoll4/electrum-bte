@@ -53,7 +53,7 @@ except ImportError as e:
 
 MSG_NEEDS_FW_UPDATE_GENERIC = _('Firmware version too old. Please update at') + \
     ' https://www.ledger.com'
-MSG_NEEDS_FW_UPDATE_SEGWIT = _('Firmware version (or "Bitcoin" app) too old for Segwit support. Please update at') + \
+MSG_NEEDS_FW_UPDATE_SEGWIT = _('Firmware version (or "Bitweb" app) too old for Segwit support. Please update at') + \
     ' https://www.ledger.com'
 MULTI_OUTPUT_SUPPORT = '1.1.4'
 SEGWIT_SUPPORT = '1.1.10'
@@ -863,7 +863,7 @@ class Ledger_Client_Legacy_HW1(Ledger_Client_Legacy):
                 raise UserFacingException("Invalid channel.\n"
                                           "Please make sure that 'Browser support' is disabled on your device.")
             if e.sw == 0x6d00 or e.sw == 0x6700:
-                raise UserFacingException(_("Device not in Bitcoin mode")) from e
+                raise UserFacingException(_("Device not in Bitweb mode")) from e
             raise e
         else:
             deprecation_warning = (

@@ -1,2 +1,5 @@
 tox
 coveralls
+
+# Algo YescryptR16 support.
+bitweb_yespower

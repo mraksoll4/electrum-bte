@@ -1,0 +1,2 @@
+bitweb_yespower==1.0.5 \
+    --hash=sha256:0d93f25328e3591af303fe6c128dd25851062a9edb6adbed21e09f7113c7904c

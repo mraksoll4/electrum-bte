@@ -40,8 +40,8 @@ def read_json(filename, default):
     return r
 
 
-GIT_REPO_URL = "https://github.com/spesmilo/electrum"
-GIT_REPO_ISSUES_URL = "https://github.com/spesmilo/electrum/issues"
+GIT_REPO_URL = "https://github.com/bitweb-project/electrum-bte"
+GIT_REPO_ISSUES_URL = "https://github.com/bitweb-project/electrum-bte/issues"
 BIP39_WALLET_FORMATS = read_json('bip39_wallet_formats.json', [])
 
 
@@ -73,15 +73,14 @@ class BitcoinMainnet(AbstractNet):
     NET_NAME = "mainnet"
     TESTNET = False
     WIF_PREFIX = 0x80
-    ADDRTYPE_P2PKH = 0
-    ADDRTYPE_P2SH = 5
-    SEGWIT_HRP = "bc"
+    ADDRTYPE_P2PKH = 33
+    ADDRTYPE_P2SH = 30
+    SEGWIT_HRP = "web"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
-    DEFAULT_PORTS = {'t': '50001', 's': '50002'}
+    GENESIS = "00043e9c6bc54d9bd266c3767a83a7b9da435dd7f84e485a2bf2a869be62f1f3"
+    DEFAULT_PORTS = {'t': '20001', 's': '20002'}
     DEFAULT_SERVERS = read_json('servers.json', {})
     CHECKPOINTS = read_json('checkpoints.json', [])
-    BLOCK_HEIGHT_FIRST_LIGHTNING_CHANNELS = 497000
 
     XPRV_HEADERS = {
         'standard':    0x0488ade4,  # xprv
@@ -102,9 +101,13 @@ class BitcoinMainnet(AbstractNet):
     BIP44_COIN_TYPE = 0
     LN_REALM_BYTE = 0
     LN_DNS_SEEDS = [
-        'nodes.lightning.directory.',
-        'lseed.bitcoinstats.com.',
-        'lseed.darosior.ninja',
+        'lseed.bitwebcore.net.',
+        'lseed1.bitwebcore.net.',
+        'lseed2.bitwebcore.net.',
+        'lseed3.bitwebcore.net.',
+        'lseedbte1.scalaris.info',
+        'lseedbte2.scalaris.info',
+        'lseedbte3.scalaris.info',
     ]
 
 
@@ -113,11 +116,11 @@ class BitcoinTestnet(AbstractNet):
     NET_NAME = "testnet"
     TESTNET = True
     WIF_PREFIX = 0xef
-    ADDRTYPE_P2PKH = 111
+    ADDRTYPE_P2PKH = 66
     ADDRTYPE_P2SH = 196
     SEGWIT_HRP = "tb"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"
+    GENESIS = "00002a542f15e4f95e6256e5fc37532ad965e5874b4f5c4aaab75c792f184f63"
     DEFAULT_PORTS = {'t': '51001', 's': '51002'}
     DEFAULT_SERVERS = read_json('servers_testnet.json', {})
     CHECKPOINTS = read_json('checkpoints_testnet.json', [])
@@ -149,9 +152,9 @@ class BitcoinTestnet(AbstractNet):
 class BitcoinRegtest(BitcoinTestnet):
 
     NET_NAME = "regtest"
-    SEGWIT_HRP = "bcrt"
+    SEGWIT_HRP = "rcrt"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"
+    GENESIS = "327f1b1d976d222269e6b7486c8ffc040e9019fd5d75d481740ecb777c1d7866"
     DEFAULT_SERVERS = read_json('servers_regtest.json', {})
     CHECKPOINTS = []
     LN_DNS_SEEDS = []
@@ -160,12 +163,12 @@ class BitcoinRegtest(BitcoinTestnet):
 class BitcoinSimnet(BitcoinTestnet):
 
     NET_NAME = "simnet"
-    WIF_PREFIX = 0x64
-    ADDRTYPE_P2PKH = 0x3f
-    ADDRTYPE_P2SH = 0x7b
+    WIF_PREFIX = 0xef
+    ADDRTYPE_P2PKH = 0x6f
+    ADDRTYPE_P2SH = 0xc4
     SEGWIT_HRP = "sb"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6"
+    GENESIS = "00002a542f15e4f95e6256e5fc37532ad965e5874b4f5c4aaab75c792f184f63"
     DEFAULT_SERVERS = read_json('servers_regtest.json', {})
     CHECKPOINTS = []
     LN_DNS_SEEDS = []
@@ -174,8 +177,8 @@ class BitcoinSimnet(BitcoinTestnet):
 class BitcoinSignet(BitcoinTestnet):
 
     NET_NAME = "signet"
-    BOLT11_HRP = "tbs"
-    GENESIS = "00000008819873e925422c1ff0f99f7cc9bbb232af63a077a480a3633bee1ef6"
+    BOLT11_HRP = "sb"
+    GENESIS = "00002a542f15e4f95e6256e5fc37532ad965e5874b4f5c4aaab75c792f184f63"
     DEFAULT_SERVERS = read_json('servers_signet.json', {})
     CHECKPOINTS = []
     LN_DNS_SEEDS = []

@@ -744,13 +744,13 @@ class TestLNUtil(ElectrumTestCase):
         # accepted by getaddrinfo but not ipaddress.ip_address
         self.assertEqual(split_host_port("127.0.0:8000"), ("127.0.0", "8000"))
         self.assertEqual(split_host_port("127.0.0"), ("127.0.0", "9735"))
-        self.assertEqual(split_host_port("electrum.org:8000"), ("electrum.org", "8000"))
-        self.assertEqual(split_host_port("electrum.org"), ("electrum.org", "9735"))
+        self.assertEqual(split_host_port("bitwebcore.net:8000"), ("bitwebcore.net", "8000"))
+        self.assertEqual(split_host_port("bitwebcore.net"), ("bitwebcore.net", "9735"))
 
         with self.assertRaises(ConnStringFormatError):
-            split_host_port("electrum.org:8000:")
+            split_host_port("bitwebcore.net:8000:")
         with self.assertRaises(ConnStringFormatError):
-            split_host_port("electrum.org:")
+            split_host_port("bitwebcore.net:")
 
     def test_extract_nodeid(self):
         with self.assertRaises(ConnStringFormatError):

@@ -52,12 +52,12 @@ class TestNetwork(ElectrumTestCase):
         super().tearDownClass()
         constants.set_mainnet()
 
-    async def asyncSetUp(self):
-        await super().asyncSetUp()
+    def setUp(self):
+        super().setUp()
         self.config = SimpleConfig({'electrum_path': self.electrum_path})
         self.interface = MockInterface(self.config)
 
-    async def test_fork_noconflict(self):
+    def test_fork_noconflict(self):
         blockchain.blockchains = {}
         self.interface.q.put_nowait({'block_height': 8, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: False}})
         def mock_connect(height):
@@ -68,11 +68,11 @@ class TestNetwork(ElectrumTestCase):
         self.interface.q.put_nowait({'block_height': 5, 'mock': {'binary':1,'check':lambda x: True, 'connect': lambda x: True}})
         self.interface.q.put_nowait({'block_height': 6, 'mock': {'binary':1,'check':lambda x: True, 'connect': lambda x: True}})
         ifa = self.interface
-        res = await ifa.sync_until(8, next_height=7)
-        self.assertEqual(('fork', 8), res)
+        fut = asyncio.run_coroutine_threadsafe(ifa.sync_until(8, next_height=7), util.get_asyncio_loop())
+        self.assertEqual(('fork', 8), fut.result())
         self.assertEqual(self.interface.q.qsize(), 0)
 
-    async def test_fork_conflict(self):
+    def test_fork_conflict(self):
         blockchain.blockchains = {7: {'check': lambda bad_header: False}}
         self.interface.q.put_nowait({'block_height': 8, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: False}})
         def mock_connect(height):
@@ -83,11 +83,11 @@ class TestNetwork(ElectrumTestCase):
         self.interface.q.put_nowait({'block_height': 5, 'mock': {'binary':1,'check':lambda x: True, 'connect': lambda x: True}})
         self.interface.q.put_nowait({'block_height': 6, 'mock': {'binary':1,'check':lambda x: True, 'connect': lambda x: True}})
         ifa = self.interface
-        res = await ifa.sync_until(8, next_height=7)
-        self.assertEqual(('fork', 8), res)
+        fut = asyncio.run_coroutine_threadsafe(ifa.sync_until(8, next_height=7), util.get_asyncio_loop())
+        self.assertEqual(('fork', 8), fut.result())
         self.assertEqual(self.interface.q.qsize(), 0)
 
-    async def test_can_connect_during_backward(self):
+    def test_can_connect_during_backward(self):
         blockchain.blockchains = {}
         self.interface.q.put_nowait({'block_height': 8, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: False}})
         def mock_connect(height):
@@ -97,8 +97,8 @@ class TestNetwork(ElectrumTestCase):
         self.interface.q.put_nowait({'block_height': 3, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: True}})
         self.interface.q.put_nowait({'block_height': 4, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: True}})
         ifa = self.interface
-        res = await ifa.sync_until(8, next_height=4)
-        self.assertEqual(('catchup', 5), res)
+        fut = asyncio.run_coroutine_threadsafe(ifa.sync_until(8, next_height=4), util.get_asyncio_loop())
+        self.assertEqual(('catchup', 5), fut.result())
         self.assertEqual(self.interface.q.qsize(), 0)
 
     def mock_fork(self, bad_header):
@@ -107,7 +107,7 @@ class TestNetwork(ElectrumTestCase):
                                   forkpoint_hash=sha256(str(forkpoint)).hex(), prev_hash=sha256(str(forkpoint-1)).hex())
         return b
 
-    async def test_chain_false_during_binary(self):
+    def test_chain_false_during_binary(self):
         blockchain.blockchains = {}
         self.interface.q.put_nowait({'block_height': 8, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: False}})
         mock_connect = lambda height: height == 3
@@ -118,8 +118,8 @@ class TestNetwork(ElectrumTestCase):
         self.interface.q.put_nowait({'block_height': 5, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: True}})
         self.interface.q.put_nowait({'block_height': 6, 'mock': {'catchup':1, 'check': lambda x: False, 'connect': lambda x: True}})
         ifa = self.interface
-        res = await ifa.sync_until(8, next_height=6)
-        self.assertEqual(('catchup', 7), res)
+        fut = asyncio.run_coroutine_threadsafe(ifa.sync_until(8, next_height=6), util.get_asyncio_loop())
+        self.assertEqual(('catchup', 7), fut.result())
         self.assertEqual(self.interface.q.qsize(), 0)
 
 
