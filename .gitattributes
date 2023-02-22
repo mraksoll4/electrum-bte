@@ -1,5 +1,20 @@
 # Auto detect text files and perform end-of-line normalization (to LF)
-*        text=auto
+* text=auto
+*.co text=lf
+*.py text=lf
+*.md text=lf
+*.gitattributes text=lf
+*.gitignore text=lf
+*.gitmodules text=lf
+*.editorconfig text=lf
+*.setup.cfg text=lf
+*.ini text=lf
+*.in text=lf
+*.txt text=lf
+*.sh text=lf
+*.xml text=lf
+*.spec text=lf
+*.qml text=lf
 
 # These Windows files should have CRLF line endings in checkout
 *.bat    text eol=crlf
