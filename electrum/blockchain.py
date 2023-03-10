@@ -524,8 +524,8 @@ class Blockchain(Logger):
             h, t = self.checkpoints[index]
             return t
         # new target
-        elif index > 91:
-            return self.get_target_lwma(index))
+        elif index > 90:
+            return self.get_target_lwma(index)
         first = self.read_header(index * 2016)
         last = self.read_header(index * 2016 + 2015)
         if not first or not last:
