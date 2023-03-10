@@ -5,31 +5,7 @@
         "t": "20001",
         "version": "1.4"
     },
-    "electrumx.bitwebcore.net": {
-        "pruning": "-",
-        "s": "20002",
-        "t": "20001",
-        "version": "1.4"
-    },
-    "electrumx1.bitwebcore.net": {
-        "pruning": "-",
-        "s": "20002",
-        "t": "20001",
-        "version": "1.4"
-    },
-    "electrumx3.bitwebcore.net": {
-        "pruning": "-",
-        "s": "20002",
-        "t": "20001",
-        "version": "1.4"
-    },
-    "electrumx6.scalaris.info": {
-        "pruning": "-",
-        "s": "20002",
-        "t": "20001",
-        "version": "1.4"
-    },
-    "electrumx7.scalaris.info": {
+    "127.0.0.1": {
         "pruning": "-",
         "s": "20002",
         "t": "20001",
